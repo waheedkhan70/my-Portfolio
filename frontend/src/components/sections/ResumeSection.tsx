@@ -41,8 +41,20 @@ export default function ResumeSection() {
       })
       .then(data => {
         if (data) {
+          let resumeUrl = data.resumeUrl || '/resume.pdf';
+          try {
+            // If backend returned an absolute URL (e.g. http://localhost:5000/uploads/...),
+            // convert it to a same-origin path so links work and respect our frontend proxy.
+            if (typeof resumeUrl === 'string' && /^https?:\/\//i.test(resumeUrl)) {
+              const parsed = new URL(resumeUrl);
+              resumeUrl = parsed.pathname || resumeUrl;
+            }
+          } catch (e) {
+            // leave resumeUrl as-is on parse failure
+          }
+
           const fetched = {
-            resumeUrl: data.resumeUrl || '/resume.pdf',
+            resumeUrl,
             resumeTitle: data.resumeTitle || 'Curriculum Vitae',
             resumeDescription: data.resumeDescription || 'Interested in the full spectrum of my research experience...',
             resumeTags: data.resumeTags || [

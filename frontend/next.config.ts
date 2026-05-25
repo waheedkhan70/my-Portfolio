@@ -43,6 +43,10 @@ const nextConfig: NextConfig = {
         source: '/api/contact/:path*',
         destination: 'http://localhost:5000/api/contact/:path*',
       },
+      {
+        source: '/uploads/:path*',
+        destination: 'http://localhost:5000/uploads/:path*',
+      },
     ];
   },
 };
