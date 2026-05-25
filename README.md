@@ -36,3 +36,4 @@ Both folders require a configuration file. Copy `.env.local` to both `frontend/`
 
 - **Frontend**: Needs `NEXT_PUBLIC_BACKEND_URL=http://localhost:5000/api`
 - **Backend**: Needs `MONGODB_URI` and `PORT=5000`
+# my-Portfolio
