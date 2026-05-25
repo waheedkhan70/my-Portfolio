@@ -15,19 +15,25 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Create a transporter using Gmail SMTP
+    // UPDATED: Optimized transporter for Render environment
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // Must be false for port 587
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      }
+      },
+      // Forces IPv4 and increases timeout to prevent the 'ENETUNREACH' error
+      connectionTimeout: 10000, 
+      greetingTimeout: 10000,
     });
 
     // Define the email options
     const mailOptions = {
-      from: email, // Sender address (client)
-      to: process.env.EMAIL_USER, // Receiver address (Admin)
+      from: process.env.EMAIL_USER, // Gmail requires the 'from' to be the authenticated user
+      replyTo: email,               // This allows you to reply directly to the sender
+      to: process.env.EMAIL_USER, 
       subject: `Portfolio Contact from ${name}`,
       text: `You have received a new message from your portfolio:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
       html: `
@@ -43,7 +49,6 @@ router.post('/', async (req, res) => {
       `
     };
 
-    // Send the email
     await transporter.sendMail(mailOptions);
 
     console.log(`[Email Sent] From: ${email} to ${process.env.EMAIL_USER}`);
